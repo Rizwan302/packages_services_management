@@ -1,0 +1,11 @@
+---
+- name: Create User Accounts
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Create User Account Bilal
+      user:
+        name: bilal
+        state: present
+

@@ -1,0 +1,49 @@
+---
+- name: Task Error Handling in Ansible | Block & Rescue, Ignore_Errors & Changed_When
+  hosts: all
+  become: yes
+  tasks:
+    - name: By Default Behavior
+      yum:
+        name: httpd
+        state: latest
+
+    # Task fail hone ke baad bhi Ansible next tasks run karega.
+    - name: Install package even if it fails
+      yum:
+        name: wrongpackage
+        state: present
+      ignore_errors: yes
+
+
+    # Custom condition define karte ho jisse decide hota hai kab task fail hoga.
+    - name: Check HTTP response
+      command: curl -I http://localhost
+      register: result
+      failed_when: "'200 OK' not in result.stdout"
+
+
+    # Ye batata hai ke task ko changed mark karna hai ya nahi.
+    - name: Check service status
+      command: systemctl is-active httpd
+      register: status
+      changed_when: false
+      failed_when: status.rc != 0
+
+
+    - block:
+        - name: Try installing package
+          yum:
+            name: wrongpackage
+            state: present
+
+      rescue:
+        - name: If failed, install correct package
+          yum:
+            name: httpd
+            state: present
+    # Ye try/catch jaisa hota hai (like Python or Java).
+      always:
+        - name: Always print message
+          debug:
+            msg: "Installation attempted"  

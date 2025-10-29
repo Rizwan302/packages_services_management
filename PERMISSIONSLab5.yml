@@ -1,0 +1,92 @@
+---
+- name: Lab5 – Permissions
+  hosts: all
+  become: yes
+  vars:
+    filepath: /my_own_dir
+
+  
+  tasks:
+    - name: Create Directory 
+      file:
+        path: "{{ filepath  }}"
+        state: directory
+      notify: create a directory successfuly
+    
+    - name: Change Permissions
+      file:
+        path: "{{ filepath }}"
+        mode: 644
+        state: directory
+      notify: Verify permissions
+    
+    - name: Permission Testing
+      command: ls "{{ filepath }}"
+    
+    - name: changing dir
+      shell: ls "{{ filepath }}" && pwd
+
+    - name: Create Directory Inside Another
+      file: 
+        path: "{{ filepath }}/Redhat"
+        state: directory  
+
+    - name: Update Permissions for Full Access
+      file:
+        path: "{{ filepath }}"
+        mode: 775
+        state: directory
+  
+
+    - name: Creating two directories inside
+      file:
+        path: "{{ item.name_dir }}"
+        state: directory
+      loop:
+        - { name_dir: "{{ filepath  }}/Redhat" }
+        - { name_dir: "{{ filepath }}/OEL" }
+
+
+
+    - name: Apply Recursive Permissions
+      file: 
+        path: "{{ filepath }}"
+        mode: 775
+        state: directory
+
+    - name: Create File and Subdirectory
+      copy: 
+        dest: "{{ filepath }}/file_1.txt"
+        content: "I love Linux"
+        
+    - name: Remove Read Permission
+      file:
+        path: "{{ filepath }}/file_1.txt"
+        mode: 022
+        state: file
+
+    - name: Try reading
+      command: cat "{{ filepath }}/file_1.txt"
+
+    - name: Restore Read Permission
+      file:
+        path: "{{ filepath }}/file_1.txt"
+        mode: 422
+        state: file
+
+    - name: Try reading again
+      command: cat "{{ filepath }}/file_1.txt"
+
+
+
+  handlers:
+    - name: create a directory successfuly
+      command: ls -ld /my_own_dir
+
+    - name: Verify permissions
+      block:
+        - command: ls -ld "{{ filepath }}"
+        - debug:
+            msg: "Permissions successfully changed!"
+
+

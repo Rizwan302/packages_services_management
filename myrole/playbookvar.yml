@@ -1,0 +1,20 @@
+---
+- name: Managing Variables
+  hosts: all
+  become: yes
+  vars:
+    ali: asad
+  tasks:
+    - name: create User
+      user:
+        name: "{{ ali }}"
+        state: present
+      notify: user seccessfully
+
+  handlers:
+    - name: user seccessfully
+      user:
+        name: "{{ ali }}"
+        group: wheel
+        append: yes
+  

@@ -1,0 +1,20 @@
+---
+- name: ch
+  hosts: all
+  become: yes
+  vars:
+    names:
+      - rizwan
+      - ahmed
+      - haid
+      - aniqa
+      - hainya
+      - irfan
+      - salmat
+      - rafay
+  tasks:
+    - name: Copy Apache config file
+      template:
+        src: /home/srvc/ansible/vhost.j2
+        dest: /tmp/server_info.txt
+

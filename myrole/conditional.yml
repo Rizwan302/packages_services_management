@@ -1,0 +1,65 @@
+---
+- name: Conditional Create user only if variable is true
+  hosts: all
+  become: yes
+  tasks:
+    - name: create user check
+      user:
+        name: rizwan
+        state: present
+      register: create_user
+
+    - name: Create user only if variable is true
+      user:
+        name: rizwan
+        state: present
+      when: create_user == true
+
+
+    - name: Install package only on RedHat systems
+      yum:
+        name: httpd
+        state: present
+      when: ansible_facts['os_family'] == "Redhat"
+
+    - name: Restart service only on RedHat 8
+      yum:
+        name: httpd
+        statte: present
+      when:
+        - ansible_facts['os_family'] == "RedHat"
+        - ansible_facts['distribution_major_version'] == "8"
+
+    - name: Install Nginx if system is Debian or Ubuntu
+      apt:
+        name: nginx
+        state: present
+      when: ansible_facts['distribution'] == "Debian" or ansible_facts['distribution'] == "Ubuntu"
+
+    - name: Check file exists
+      command: id ali
+      register: check_user_ali
+      ignore_errors: yes
+
+    - name: delete user
+      user:
+        name: ali
+        state: absent
+      when: check_user_ali.rc == 0
+
+
+    - name: print name
+      command: echo "welcome Redhat user"
+      when: ansible_facts['distribution'] == "Redhat"
+      tags: check
+
+
+    - name: print name
+      command: echo "welcome Orlace user"
+      when: ansible_facts['distribution'] == "Orlace"
+      tags: check
+
+
+
+
+

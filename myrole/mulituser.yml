@@ -1,0 +1,30 @@
+---
+- name: Create Multi User
+  hosts: all
+  become: yes
+  
+  tasks:
+    - name: new user
+      user:
+        name: "{{ item.name }}"
+        uid: "{{ item.uid }}"
+        state: present
+      notify: user create successfully
+
+      loop:
+        - name: Liam
+          uid: 3011
+        - name: Noah
+          uid: 3012
+        - name: Olivia
+          uid: 3013
+        - name: Emma
+          uid: 3014
+        - name: Amelia
+          uid: 3015
+
+  
+  handlers:
+    - name: user create successfully
+      debug: 
+        msg: "User created successfully"

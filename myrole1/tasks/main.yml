@@ -1,0 +1,38 @@
+---
+- name:
+  hosts: all
+  become: yes
+  vars:
+    Apache
+
+    file_path:
+      - /var/www/site1
+      - /var/www/site2
+      - /var/www/site3
+  tasks:
+    - name: Create a task to install Apache only if OS family is RedHat.
+      yum:
+        name: httpd
+        state: present
+      when: ansible_facts['os_family'] == "RedHat"
+
+
+    - name: Use loop to create multiple directories for virtual hosts
+      file:
+        path: "{{ item }}"
+        state: touch
+      loop:
+        "{{ file_path }}"
+
+    - name: Use tags to separate installation and configuration tasks:
+      yum:
+        name: httpd
+        state: present
+      tags:
+        - install
+        - config
+
+
+
+
+# tasks file for myrole1

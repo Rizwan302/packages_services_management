@@ -1,0 +1,7 @@
+
+ServerName {{ ansible_hostname }}
+Date: {{ ansible_date_time.date }}
+Server IP {{ ansible_default_ipv4.address }}
+{% for item in names %}
+{{ item }}
+{% endfor %} 

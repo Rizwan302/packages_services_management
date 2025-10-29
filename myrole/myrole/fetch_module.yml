@@ -1,0 +1,65 @@
+---
+- name: Ansible fetch module
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: question11
+      fetch:
+        src: /etc/ssh/sshd_config
+        dest: /backup/ssh_configs
+        flat: yes
+
+
+    
+    - name: question12
+      fetch:
+        src: /var/log/
+        dest: /tmp/unique
+        flat: yes
+
+
+    - name: question13 
+      fetch: 
+        src: /etc/passwd 
+        dest: /tmp/user_backup
+
+
+    - name: question4 
+      fetch: 
+        src: /etc/hostname 
+        dest: /tmp/hostname_backup
+
+    - name: question5
+      fetch:
+        src: /etc/resolv.conf
+        dest: /tmp/loclfile
+
+    - name: question6
+      fecth:
+        src: /var/log/secure
+        dest: /opt/security_logs/
+
+    - name: question7
+      fecth:
+        src: /etc/fstab
+        dest: fstab_{{ inventory_hostname }}
+        flat: yes
+
+    - name: question8
+      fecth:
+        src: /etc/httpd/ "*.conf" 
+        dest: /tmp/file_confgi
+
+    - name: question9
+      fecth:
+        src: /tmp/system_info.txt
+        dest: /tmp/system1_info.txt
+        flat: yes
+
+    - name: question10
+      fecth:
+        src: /var/log/messages -size +5
+        dest: /tmp/log_info
+        flat: yes
+

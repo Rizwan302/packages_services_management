@@ -1,0 +1,63 @@
+---
+- name: yum Module – Practical Questions
+  hosts: all
+  become: yes
+  vars:
+   install_packages:
+     - httpd
+     - vim
+     - git
+  tasks:
+    - name: Install the httpd package
+       yum:
+         name: httpd
+         state: present
+
+    - name: Remove the telnet
+       yum:
+         name: telnet
+         state: absent
+
+    - name: Ensure vim-enhanced is the latest version
+       yum:
+         name: vim-enhanced
+         state: latest
+
+    - name: Install multiple packages
+       yum:
+         name: {{ item }}
+         state: present
+       loop: { install_packages }
+
+    - name: Check if nginx is available in the repository
+      yum:
+        name: nginx
+        state: info
+
+    - name: Install a specific version of httpd (e.g., 2.4.6-97.el7).
+       yum:
+         name:  httpd-2.4.6-97.el7
+         state: present
+
+    - name: Clean all yum caches using Ansible
+      command: yum all clean
+
+    - name: Configure the EPEL repository and install a package from it
+      yum:
+        name: 
+
+
+    - name: Verify if python3 is installed; if not, install it
+      yum:
+        name: python3
+        state: started
+        enabled: yes
+
+    - name: Download (but don’t install) the tree package.
+      yum: 
+        name: tree
+        state: stoped
+        enabled: no 
+
+
+

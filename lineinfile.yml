@@ -1,0 +1,64 @@
+---
+- name: lineinfile
+  hosts: all
+  become: yes
+  env_vars:
+    - JAVA_HOME
+    - M2_HOME
+
+  tasks:
+    - name: lineinfile Module – Practical Questions
+      lineinfile:
+            path: /etc/ssh/sshd_config
+            line: 'PermitRootLogin no'
+
+
+    - name: Replace any line
+      lineinfile:
+            path: /etc/ssh/sshd_config
+            search_string: 'PasswordAuthentication'
+            line: 'PasswordAuthentication yes'
+
+    - name: Insert a comment line
+      lineinfile:
+            path: /etc/motd
+            line: '# Managed by Ansible'
+
+    - name: question4
+      lininfile:
+           path: /etc/hosts
+           line: 192.168.1.10 devops-node
+
+    - name: question5
+      lininfile:
+           path: /etc/sysctl.conf
+           regexp: '.*'
+           line: 'deprecated'
+
+    - name: question6
+      lininfile:
+           path: /etc/fstab
+           line: 'new NFS mount'
+           insertafter: EOF
+
+    - name: question7
+      lininfile:
+           path: /etc/profile
+           line: 'export PATH=$PATH:/usr/local/bin'
+
+    - name: question8
+      lininfile:
+           path: /etc/selinux/config
+           regexp: '^SELINUX='
+           line: SELINUX=enforcing
+
+    - name: question9
+      lininfile:
+           path: /etc/ssh/sshd_config
+           regexp: '^2022'
+           line: 22
+
+    - name: question10
+      lininfile:
+           path: /etc/environment
+           line: {{ env_vars }}

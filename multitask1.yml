@@ -1,0 +1,49 @@
+---
+- name: Multitask Playbook
+  hosts: all
+  become: yes
+  tasks:
+    - name: Create a user named sandy
+      user:
+        name: sandy
+        state: present
+    - name: Create a group named developers
+      group:
+        name: developers
+        state: present
+      notify: add user to group
+    - name: Create a File
+      file:
+        path: /tmp/my-new-file
+        state: touch
+      notify: copy file in home dir
+    - name: Install a Package
+      yum:
+        name: httpd 
+        state: present
+      notify: 
+        - start service
+        - add service in firewall
+
+  handlers:
+    - name: add user to group
+      debug:
+       msg: "Handler triggered: User can now be added to the 'developers' group."
+  
+    - name: copy file in home dir
+      debug:
+        msg: "Handler triggered: copy file in home dir to the 'my-new-file' file"
+  
+    - name: start service
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+
+    - name: add service in firewall
+      firewalld:
+        service: http
+        permanent: yes
+        state: enabled
+        immediate: yes
+        

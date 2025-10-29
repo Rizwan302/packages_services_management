@@ -1,0 +1,51 @@
+---
+- name: Ansible Loops Complete Practice Lab
+  hosts: all
+  become: yes
+  vars:
+    user_list:
+      ali:
+        uid: 1032
+      redhat:
+        uid: 1033
+      usman:
+        uid: 1034
+      practice:
+        uid: 1035
+
+    pkg:
+      - git
+      - httpd
+      - firewalld
+
+    user_group:
+      - [ 'rizwan', 'devops' ]
+      - [ 'ali', 'admin' ]
+      - [ 'usman', 'whell' ]
+      - [ 'practice', 'developer']
+      - [ 'redhat', 'whell' ]
+
+  tasks:
+    - name: Install multiple packages with Simple Loop
+      yum:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ pkg }}"
+
+    - name: Create users from dictionary with Dictionary Loop
+      user:
+        name: "{{ item.key }}"
+        uid: "{{ item.value.uid }}"
+        state: present
+      loop: "{{ user_list | dict2items }}"
+    
+
+    - name: add user group with list loop
+      user:
+        name: "{{ item.0 }}"
+        groups: "{{ item.1 }}"
+        append: yes
+      with_nested: "{{ user_group }}"
+
+
+    

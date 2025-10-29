@@ -1,0 +1,31 @@
+---
+- name: Multitasking playbook
+  hosts: all
+  tasks:
+   - name: create user
+     user:
+       name: lilly
+       state: present
+   - name: create group
+     group:
+       name: developer
+       state: present
+   - name: add user to a group
+     user:
+       name: lilly
+       groups: developer
+       append: yes
+   - name: create a file
+     file:
+       path: /tmp/my-file
+       state: touch
+       mode: '640'
+   - name: create a directory
+     file:
+       path: /tmp/my-dir
+       state: directory
+   - name: copy file to a directory
+     copy:
+       src: /tmp/my-file
+       dest: /tmp/my-dir/
+       remote_src: yes

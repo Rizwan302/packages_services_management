@@ -1,0 +1,13 @@
+---
+- name:
+  hosts: all
+  become: yes
+
+  handlers:
+    - name: restart apache
+      service:
+        name: httpd
+        state: restarted
+
+
+# handlers file for myrole1
