@@ -1,0 +1,66 @@
+---
+- name: Remove Logical Volume and wipe out filesystems
+  hosts: all
+  become: yes
+  vars:
+    dir_path:
+      - /app/old/logs
+      - /app/new/logs
+
+    LV1: lv_old_logs
+    LV2: lv_new_logs
+    vg: vg_logs
+
+  tasks:
+    - name: Unmount the "{{ dir_path[0] }}" logical volume
+      mount:
+        path: "{{ dir_path[0] }}"
+        state: unmounted
+    
+    - name: Unmount the "{{ dir_path[1] }}" logical volume
+      mount:
+        path: "{{ dir_path[1] }}"
+        state: unmounted
+
+    - name: Remove the Logical Volume (LV) named "{{ LV1 }}"
+      lvol:
+        vg: "{{ vg }}"
+        lv: "{{ LV1 }}"
+        state: absent
+        force: true
+
+    - name: Remove the Logical Volume (LV) named "{{ LV2 }}"
+      lvol:
+        vg: "{{ vg }}"
+        lv: "{{ LV2 }}"
+        state: absent
+        force: true
+    
+    - name: Remove the Volume Group (VG) named "{{ vg }}"
+      lvg: 
+        vg: "{{ vg }}"
+        state: absent
+      
+    - name: Remove physical volume
+      command: pvremove -ff -y {{ item }}
+      loop:
+        - /dev/sdb
+        - /dev/sdc
+      ignore_errors: yes
+
+    - name: Wipeout the filesystem
+      command: "wipefs -a {{ item }}"
+      loop:
+        - /dev/sdb
+        - /dev/sdc
+      ignore_errors: yes
+
+    - name: show disk
+      command: "df -TH"
+
+        
+          
+
+
+
+
