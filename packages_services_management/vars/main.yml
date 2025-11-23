@@ -1,0 +1,16 @@
+---
+# vars file for packages_services_management
+
+users_list:
+  - alice
+  - bob
+  - carol
+
+group_name: linoop
+welcome_file: Welcome
+message: Welcome to the Linoop Group!
+copy_user_path: '/home/{{ item }}/{{welcome_file}}'
+package_name: httpd
+service_name: httpd
+firewalld_service: http
+
